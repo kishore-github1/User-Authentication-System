@@ -24,4 +24,9 @@ userSchema.pre('save', async function(next) {
   next();
 });
 
+userSchema.methods.verifyResetToken = function(token) {
+  const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+  return this.resetToken === hashedToken && this.resetTokenExpiry > Date.now();
+};
+
 module.exports = mongoose.model('User', userSchema);
